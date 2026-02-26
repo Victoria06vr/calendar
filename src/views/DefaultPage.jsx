@@ -1,50 +1,52 @@
 
 import '../App.css'
 import EventList from '../components/EventList';
-import myimage from "../assets/calendarimage.jpg";
 import SearchField from '../components/SearchField';
 import { useState, useEffect } from 'react';
 import { useEvents } from '../EventsContext';
 
 
 function DefaultPage() {
-  const { events } = useEvents();
+  const { events, setEvents } = useEvents();
 
-  // Looks for information in webstorage, if there are some,
-  //filterText is equal to this value, else it is an empty string.
+  // Load saved filter text from localStorage on initial render
   const [filterText, setFilterText] = useState(() => {
     const savedFilter = localStorage.getItem("filterText");
     return savedFilter ? savedFilter : "";
   });
 
+  // Save filterText to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("filterText", filterText)
   }, [filterText])
 
+  // Sort the events by date
   const sortedEvents = events.slice().sort((a, b) =>
     a.date.localeCompare(b.date, "en", { sensitivity: "base" })
   );
 
   // Filter events based on the user input
   const filteredEvents = sortedEvents.filter(event =>
-    event.title.toLowerCase(). includes(filterText.toLowerCase())
+    event.title.toLowerCase().includes(filterText.toLowerCase())
   );
 
+  // Filter input handler
   const handleInputChange = (event) => {
     setFilterText(event.target.value);
   }
 
   return (
-    <div>
-      <div className="hero">
-        <img className="hero-image" src={myimage} alt="This is a picture of a calendar"/>
-        <div className="search-wrapper">
-          <SearchField handleinput={handleInputChange} filter={filterText} />
+    <>
+      {filteredEvents.length > 0 ? (
+        <div>
+          <SearchField handleInput={handleInputChange} filterText={filterText} />
+          <EventList events={filteredEvents} setEvents={setEvents} />
         </div>
-      </div>
-      <EventList events ={filteredEvents}/>
-    </div>
-  )
+      ) : (
+        <p>Sorry, nothing to show...</p>
+      )}
+    </>
+  );
 }
 
 export default DefaultPage;

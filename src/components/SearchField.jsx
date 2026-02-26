@@ -1,7 +1,11 @@
-export default function SearchField({handleinput, filter}) {
-
+export default function SearchField({handleInput, filterText}) {
     return (
-        <input type="search" placeholder="Type to search..." value={filter} onChange={handleinput} /> 
+        <input
+            type="search"
+            placeholder="Type to search..."
+            value={filterText}
+            onChange={handleInput}
+            className="searchField"
+        />
     )
-    
 }
