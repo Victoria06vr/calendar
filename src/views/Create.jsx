@@ -15,6 +15,8 @@ export default function Create() {
     function createHandler(e){
         e.preventDefault();
         addEvent({ title, date, description });
+        localStorage.removeItem("filterText");
+  navigation("/");
         navigation("/");
     }
 
